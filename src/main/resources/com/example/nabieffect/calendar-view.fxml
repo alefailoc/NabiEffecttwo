@@ -9,10 +9,10 @@
     </children>
 
     <Button layoutX="321.0" layoutY="447.0" onAction="#monthBtn" text="weekly Planner" />
-   <HBox fx:id="weekoneHBox" layoutX="21.0" layoutY="14.0" prefHeight="92.0" prefWidth="570.0" />
-   <HBox fx:id="weektwoHBox" layoutX="22.0" layoutY="118.0" prefHeight="92.0" prefWidth="570.0" />
-   <HBox fx:id="weekthreeHBox" layoutX="21.0" layoutY="222.0" prefHeight="92.0" prefWidth="570.0" />
-   <HBox fx:id="weekfourHBox" layoutX="21.0" layoutY="326.0" prefHeight="92.0" prefWidth="570.0" />
+   <HBox fx:id="weekOneHBox" layoutX="21.0" layoutY="14.0" prefHeight="92.0" prefWidth="570.0" />
+   <HBox fx:id="weekTwoHBox" layoutX="22.0" layoutY="118.0" prefHeight="92.0" prefWidth="570.0" />
+   <HBox fx:id="weekThreeHBox" layoutX="21.0" layoutY="222.0" prefHeight="92.0" prefWidth="570.0" />
+   <HBox fx:id="weekFourHBox" layoutX="21.0" layoutY="326.0" prefHeight="92.0" prefWidth="570.0" />
    <Button layoutX="218.0" layoutY="447.0" mnemonicParsing="false" onAction="#taskBtn" text="insert task" />
 
 </AnchorPane>

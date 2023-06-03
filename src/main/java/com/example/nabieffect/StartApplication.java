@@ -1,6 +1,8 @@
 package com.example.nabieffect;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -10,6 +12,7 @@ import java.io.IOException;
 
 public class StartApplication extends Application {
     private static Scene scene;
+    public static ObservableList<Task> tasks = FXCollections.observableArrayList();
 
     public StartApplication(){
     }

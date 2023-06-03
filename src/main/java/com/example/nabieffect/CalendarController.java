@@ -1,5 +1,8 @@
 package com.example.nabieffect;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -11,19 +14,28 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Reader;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
+import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Locale;
 import java.util.Optional;
 
+import static com.example.nabieffect.StartApplication.tasks;
+
+
 public class CalendarController {
 
-    public ObservableList<Task> tasks = FXCollections.observableArrayList();
-    public HBox weekoneHBox;
-    public HBox weektwoHBox;
-    public HBox weekthreeHBox;
-    public HBox weekfourHBox;
+    public HBox weekOneHBox;
+    public HBox weekTwoHBox;
+    public HBox weekThreeHBox;
+    public HBox weekFourHBox;
     TableView<Task> sunOneTable = new TableView<Task>();
     TableView<Task> monOneTable = new TableView<Task>();
     TableView<Task> tuesOneTable = new TableView<Task>();
@@ -31,6 +43,7 @@ public class CalendarController {
     TableView<Task> thursOneTable = new TableView<Task>();
     TableView<Task> friOneTable = new TableView<Task>();
     TableView<Task> satOneTable = new TableView<Task>();
+
     TableView<Task> sunTwoTable = new TableView<Task>();
     TableView<Task> monTwoTable = new TableView<Task>();
     TableView<Task> tuesTwoTable = new TableView<Task>();
@@ -38,6 +51,7 @@ public class CalendarController {
     TableView<Task> thursTwoTable = new TableView<Task>();
     TableView<Task> friTwoTable = new TableView<Task>();
     TableView<Task> satTwoTable = new TableView<Task>();
+
     TableView<Task> sunThreeTable = new TableView<Task>();
     TableView<Task> monThreeTable = new TableView<Task>();
     TableView<Task> tuesThreeTable = new TableView<Task>();
@@ -45,6 +59,8 @@ public class CalendarController {
     TableView<Task> thursThreeTable = new TableView<Task>();
     TableView<Task> friThreeTable = new TableView<Task>();
     TableView<Task> satThreeTable = new TableView<Task>();
+
+
     TableView<Task> sunFourTable = new TableView<Task>();
     TableView<Task> monFourTable = new TableView<Task>();
     TableView<Task> tuesFourTable = new TableView<Task>();
@@ -53,15 +69,32 @@ public class CalendarController {
     TableView<Task> friFourTable = new TableView<Task>();
     TableView<Task> satFourTable = new TableView<Task>();
 
-    public CalendarController(){
+
+    //Monday
+    TableView[] mondayTables = {monOneTable,monTwoTable,monThreeTable,monFourTable};
+    //Tuesday
+    TableView[] tuesdayTables = {tuesOneTable,tuesTwoTable,tuesThreeTable,tuesFourTable};
+    //Wednesday
+    TableView[] wednesdayTables = {wedOneTable,wedTwoTable,wedThreeTable,wedFourTable};
+    //Thursday
+    TableView[] thursdayTables = {thursOneTable,thursTwoTable,thursThreeTable,thursFourTable};
+    //Friday
+    TableView[] fridayTables = {friOneTable,friTwoTable,friThreeTable,friFourTable};
+    //Saturday
+    TableView[] saturdayTables = {satOneTable,satTwoTable,satThreeTable,satFourTable};
+    //Sunday
+    TableView[] sundayTables = {sunOneTable,sunTwoTable,sunThreeTable,sunFourTable};
+    public CalendarController() {
 
     }
+
     @FXML
     protected void monthBtn() throws IOException {
         StartApplication.setRoot("hello-view");
     }
 
     public void initialize() {
+//        loadTasks();
 
         sunOneTable.setPrefWidth(82);
         monOneTable.setPrefWidth(82);
@@ -106,13 +139,13 @@ public class CalendarController {
         saturdayColumn.setPrefWidth(82);
         satOneTable.getColumns().add(saturdayColumn);
 
-        weekoneHBox.getChildren().add(sunOneTable);
-        weekoneHBox.getChildren().add(monOneTable);
-        weekoneHBox.getChildren().add(tuesOneTable);
-        weekoneHBox.getChildren().add(wedOneTable);
-        weekoneHBox.getChildren().add(thursOneTable);
-        weekoneHBox.getChildren().add(friOneTable);
-        weekoneHBox.getChildren().add(satOneTable);
+        weekOneHBox.getChildren().add(sunOneTable);
+        weekOneHBox.getChildren().add(monOneTable);
+        weekOneHBox.getChildren().add(tuesOneTable);
+        weekOneHBox.getChildren().add(wedOneTable);
+        weekOneHBox.getChildren().add(thursOneTable);
+        weekOneHBox.getChildren().add(friOneTable);
+        weekOneHBox.getChildren().add(satOneTable);
 
         // week 2
 
@@ -159,13 +192,13 @@ public class CalendarController {
         saturdayTwoColumn.setPrefWidth(82);
         satTwoTable.getColumns().add(saturdayTwoColumn);
 
-        weektwoHBox.getChildren().add(sunTwoTable);
-        weektwoHBox.getChildren().add(monTwoTable);
-        weektwoHBox.getChildren().add(tuesTwoTable);
-        weektwoHBox.getChildren().add(wedTwoTable);
-        weektwoHBox.getChildren().add(thursTwoTable);
-        weektwoHBox.getChildren().add(friTwoTable);
-        weektwoHBox.getChildren().add(satTwoTable);
+        weekTwoHBox.getChildren().add(sunTwoTable);
+        weekTwoHBox.getChildren().add(monTwoTable);
+        weekTwoHBox.getChildren().add(tuesTwoTable);
+        weekTwoHBox.getChildren().add(wedTwoTable);
+        weekTwoHBox.getChildren().add(thursTwoTable);
+        weekTwoHBox.getChildren().add(friTwoTable);
+        weekTwoHBox.getChildren().add(satTwoTable);
 
         //week 3
 
@@ -212,13 +245,13 @@ public class CalendarController {
         saturdayThreeColumn.setPrefWidth(82);
         satThreeTable.getColumns().add(saturdayThreeColumn);
 
-        weekthreeHBox.getChildren().add(sunThreeTable);
-        weekthreeHBox.getChildren().add(monThreeTable);
-        weekthreeHBox.getChildren().add(tuesThreeTable);
-        weekthreeHBox.getChildren().add(wedThreeTable);
-        weekthreeHBox.getChildren().add(thursThreeTable);
-        weekthreeHBox.getChildren().add(friThreeTable);
-        weekthreeHBox.getChildren().add(satThreeTable);
+        weekThreeHBox.getChildren().add(sunThreeTable);
+        weekThreeHBox.getChildren().add(monThreeTable);
+        weekThreeHBox.getChildren().add(tuesThreeTable);
+        weekThreeHBox.getChildren().add(wedThreeTable);
+        weekThreeHBox.getChildren().add(thursThreeTable);
+        weekThreeHBox.getChildren().add(friThreeTable);
+        weekThreeHBox.getChildren().add(satThreeTable);
 
         //week 4
 
@@ -265,26 +298,27 @@ public class CalendarController {
         saturdayFourColumn.setPrefWidth(82);
         satFourTable.getColumns().add(saturdayFourColumn);
 
-        weekfourHBox.getChildren().add(sunFourTable);
-        weekfourHBox.getChildren().add(monFourTable);
-        weekfourHBox.getChildren().add(tuesFourTable);
-        weekfourHBox.getChildren().add(wedFourTable);
-        weekfourHBox.getChildren().add(thursFourTable);
-        weekfourHBox.getChildren().add(friFourTable);
-        weekfourHBox.getChildren().add(satFourTable);
-
-
+        weekFourHBox.getChildren().add(sunFourTable);
+        weekFourHBox.getChildren().add(monFourTable);
+        weekFourHBox.getChildren().add(tuesFourTable);
+        weekFourHBox.getChildren().add(wedFourTable);
+        weekFourHBox.getChildren().add(thursFourTable);
+        weekFourHBox.getChildren().add(friFourTable);
+        weekFourHBox.getChildren().add(satFourTable);
 
 
     }
-    public void taskBtn(ActionEvent actionEvent) { makeDialog();}
+
+    public void taskBtn(ActionEvent actionEvent) {
+        makeDialog();
+    }
 
     public void addTaskAction(ActionEvent actionEvent) {
         makeDialog();
     }
 
 
-    public void makeDialog(){
+    public void makeDialog() {
 
         System.out.println(tasks);
         Dialog<Task> dialog = new Dialog<>();
@@ -308,20 +342,19 @@ public class CalendarController {
 
         // Add a Spinner control
         Label expectedTimeTaken = new Label("Expected time(hrs)");
-        Spinner<Double> timeExpected = new Spinner<>(0.50,2, 0);
+        Spinner<Double> timeExpected = new Spinner<>(0.50, 10, 0);
 
-        dialogPane.setContent(new VBox(taskLabel, task, detailsLabel, detail, dueDateLabel, dueDate,expectedTimeTaken,timeExpected));
+        dialogPane.setContent(new VBox(taskLabel, task, detailsLabel, detail, dueDateLabel, dueDate, expectedTimeTaken, timeExpected));
         //make an ok button
         final Button btOk = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
         //Create what you want it to do when you click the button
         btOk.addEventFilter(
                 ActionEvent.ACTION,
                 event -> {
-                    if( !detail.getText().equals("") && !task.getText().equals("")&& dueDate.getValue() != null) { // if all your fields and things ARENT EMPTY
+                    if (!detail.getText().equals("") && !task.getText().equals("") && dueDate.getValue() != null) { // if all your fields and things ARENT EMPTY
                         LocalDate date = dueDate.getValue();
                         //read them all text fields and make a new object.
-                        tasks.add(new Task(task.getText(),  detail.getText(), dueDate.getValue(), timeExpected.getValue()));
-
+                        tasks.add(new Task(task.getText(), detail.getText(), dueDate.getValue(), timeExpected.getValue()));
 
 
                         updateCalendar();
@@ -344,12 +377,17 @@ public class CalendarController {
                         alert.showAndWait();
                         event.consume(); //consume the ok button event so it doesn't close the dialog.
                     }
-
+                    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                    try (FileWriter writer = new FileWriter("tasks.json")) {
+                        gson.toJson(tasks, writer);
+                        System.out.println("Saved.");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 });
-
         Optional<Task> optionalResult = dialog.showAndWait(); //show the dialog.
 
-    }
+        }
 
     private void updateCalendar() {
         /**
@@ -364,39 +402,96 @@ public class CalendarController {
          */
         // mondayTable.getColumns().clear();
 
-        for (Task t:tasks) {
+        for (Task t : tasks) {
+            //Find Week Number
+            //https://www.baeldung.com/java-get-week-number
+            LocalDate localDate = LocalDate.now();
+            Calendar calendar = Calendar.getInstance(Locale.US);
+            calendar.set(t.getDueDate().getYear(),t.getDueDate().getMonthValue(),t.getDueDate().getDayOfMonth());
+            int weekOfMonth = calendar.get(Calendar.WEEK_OF_MONTH)-1;
 
-            if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Monday")))
-            {
-                monOneTable.getItems().add(t);
+            if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Monday"))) {
+                mondayTables[weekOfMonth].getItems().add(t);
             } else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Tuesday"))) {
-                tuesOneTable.getItems().add(t);
-            }
-            else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Wednesday"))) {
-                wedOneTable.getItems().add(t);
-            }
-            else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Thursday"))) {
-                thursOneTable.getItems().add(t);
-            }
-            else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Friday"))) {
-                friOneTable.getItems().add(t);
-            }
-            else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Saturday"))) {
-                satOneTable.getItems().add(t);
-            }
-            else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Sunday"))) {
-                sunOneTable.getItems().add(t);
+                tuesdayTables[weekOfMonth].getItems().add(t);
+            } else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Wednesday"))) {
+                wednesdayTables[weekOfMonth].getItems().add(t);
+            } else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Thursday"))) {
+                thursdayTables[weekOfMonth].getItems().add(t);
+            } else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Friday"))) {
+                fridayTables[weekOfMonth].getItems().add(t);
+            } else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Saturday"))) {
+                saturdayTables[weekOfMonth].getItems().add(t);
+            } else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Sunday"))) {
+                sundayTables[weekOfMonth].getItems().add(t);
             }
         }
     }
-
-    private void loadTasks() {
-        // load tasks from saved file
-        //open and read Json for any previous saved dat
-
-
-
-    }
 }
+
+ /**   private void loadTasks() {
+        // load tasks from saved file
+        //open and read Json for any previous saved data
+        Gson gson = new Gson();
+        try(Reader reader = new FileReader("tasks.json")){
+            //convert JSON file to Java object
+            ArrayList<Task> imports = gson.fromJson(reader, new TypeToken<ArrayList<Task>>() {
+            }.getType());
+            tasks = FXCollections.observableArrayList(imports);
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+  }
+  It doesn't work too
+*/
+
+ //Algorithm to rearrange the task into a productive and time efficient way
+
+/**
+ *    **THE PROGRAM SHOULD RESPECT THE 1 HOUR OF PERSONAL TIME IN WEEK DAYS AND THE 3 HOURS OF PERSONAL TIME DURING THE WEEKEND**
+ *    (the user could also decide how much of personal time they could have during the weekends or tell the program when
+ *    they have an important meeting therefore the time they have available for to accomplish tasks must be shorten)
+ */
+
+/** 0. Set the available time to accomplish tasks during the week to 5.30 hours
+ *     Set the available time to accomplish tasks during the weekend to 11.30 hours
+  */
+
+/**
+ * 1. Get tasks from the Json File
+ */
+
+ /**
+ * 2. Select the ones that are close to the due date and the ones that are more than 2 hours of expected time
+ */
+
+ /**
+ * 3. The tasks that are 0.50 or under 1.50 hours are to be placed close to the due date
+ */
+
+/**
+ * 4. If the task will take 2 - 3 hours ask the user if they want to split the time between two different days or keep it all in one day
+ *      If the user wants to keep it all in one day follow the procedure of step 3 : place it close to the due date or any empty space available
+ *      If the user wants to split it into two days follow the procedure of step 4
+ */
+
+
+ /**
+  * 5. If the task will take 3.5 - 4 hours split it into two and place the task once at 2 days before deadline and again at 1 day before deadline
+  */
+
+/**
+ * 6. If the task will take 4.5 - 10 hours split the time into different days before the day of the deadline = 1 hour per day (those tasks that take whole
+ *    number plus 0.50 eg:4.5,just add the plus 0.50 hours to any date between those days elected that has less tasks due)
+ */
+
+/**
+ * 7. To print the tasks into the weekly planner,the program must arrange the elected tasks from less time expected eg:0.50 to more time expected eg:1 hour
+ *     meaning that the ones that take less to accomplish will be at the top of the table.
+ */
+
+
+
+
 
 
