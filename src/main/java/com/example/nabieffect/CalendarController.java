@@ -4,13 +4,13 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -18,14 +18,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
-import java.time.temporal.TemporalAdjusters;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Locale;
-import java.util.Optional;
+import java.util.*;
 
 import static com.example.nabieffect.StartApplication.tasks;
 
@@ -71,22 +66,20 @@ public class CalendarController {
 
 
     //Monday
-    TableView[] mondayTables = {monOneTable,monTwoTable,monThreeTable,monFourTable};
+    TableView[] mondayTables = {monOneTable, monTwoTable, monThreeTable, monFourTable};
     //Tuesday
-    TableView[] tuesdayTables = {tuesOneTable,tuesTwoTable,tuesThreeTable,tuesFourTable};
+    TableView[] tuesdayTables = {tuesOneTable, tuesTwoTable, tuesThreeTable, tuesFourTable};
     //Wednesday
-    TableView[] wednesdayTables = {wedOneTable,wedTwoTable,wedThreeTable,wedFourTable};
+    TableView[] wednesdayTables = {wedOneTable, wedTwoTable, wedThreeTable, wedFourTable};
     //Thursday
-    TableView[] thursdayTables = {thursOneTable,thursTwoTable,thursThreeTable,thursFourTable};
+    TableView[] thursdayTables = {thursOneTable, thursTwoTable, thursThreeTable, thursFourTable};
     //Friday
-    TableView[] fridayTables = {friOneTable,friTwoTable,friThreeTable,friFourTable};
+    TableView[] fridayTables = {friOneTable, friTwoTable, friThreeTable, friFourTable};
     //Saturday
-    TableView[] saturdayTables = {satOneTable,satTwoTable,satThreeTable,satFourTable};
+    TableView[] saturdayTables = {satOneTable, satTwoTable, satThreeTable, satFourTable};
     //Sunday
-    TableView[] sundayTables = {sunOneTable,sunTwoTable,sunThreeTable,sunFourTable};
-    public CalendarController() {
+    TableView[] sundayTables = {sunOneTable, sunTwoTable, sunThreeTable, sunFourTable};
 
-    }
 
     @FXML
     protected void monthBtn() throws IOException {
@@ -94,16 +87,8 @@ public class CalendarController {
     }
 
     public void initialize() {
-//        loadTasks();
-
-        sunOneTable.setPrefWidth(82);
-        monOneTable.setPrefWidth(82);
-        tuesOneTable.setPrefWidth(82);
-        wedOneTable.setPrefWidth(82);
-        thursOneTable.setPrefWidth(82);
-        friOneTable.setPrefWidth(82);
-        satOneTable.setPrefWidth(82);
-
+        loadTasks();
+/**
         TableColumn<Task, String> sundayColumn = new TableColumn<Task, String>("sun");
         sundayColumn.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
         sundayColumn.setPrefWidth(82);
@@ -149,47 +134,169 @@ public class CalendarController {
 
         // week 2
 
-        sunTwoTable.setPrefWidth(82);
-        monTwoTable.setPrefWidth(82);
-        tuesTwoTable.setPrefWidth(82);
-        wedTwoTable.setPrefWidth(82);
-        thursTwoTable.setPrefWidth(82);
-        friTwoTable.setPrefWidth(82);
-        satTwoTable.setPrefWidth(82);
 
         TableColumn<Task, String> sundayTwoColumn = new TableColumn<Task, String>("sun");
         sundayTwoColumn.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
         sundayTwoColumn.setPrefWidth(82);
+        sundayTwoColumn.setCellFactory(column -> {
+            return new TextFieldTableCell<Task, String>() {
+                @Override
+                public void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    if (empty || item == null) {
+                        setText(null);
+                        setStyle("");  // Reset cell style
+                    } else {
+                        Task task = getTableView().getItems().get(getIndex());
+                        setText(item);
+                        setStyle("-fx-background-color: " + toHexCode(task.getColor()));
+
+                    }
+                }
+            };
+        });
         sunTwoTable.getColumns().add(sundayTwoColumn);
 
         TableColumn<Task, String> mondayTwoColumn = new TableColumn<Task, String>("mon");
         mondayTwoColumn.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
         mondayTwoColumn.setPrefWidth(82);
+        mondayTwoColumn.setCellFactory(column -> {
+            return new TextFieldTableCell<Task, String>() {
+                @Override
+                public void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    if (empty || item == null) {
+                        setText(null);
+                        setStyle("");  // Reset cell style
+                    } else {
+                        Task task = getTableView().getItems().get(getIndex());
+                        setText(item);
+                        setStyle("-fx-background-color: " + toHexCode(task.getColor()));
+
+                    }
+                }
+            };
+        });
         monTwoTable.getColumns().add(mondayTwoColumn);
 
         TableColumn<Task, String> tuesdayTwoColumn = new TableColumn<Task, String>("tues");
         tuesdayTwoColumn.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
         tuesdayTwoColumn.setPrefWidth(82);
+        tuesdayTwoColumn.setCellFactory(column -> {
+            return new TextFieldTableCell<Task, String>() {
+                @Override
+                public void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    if (empty || item == null) {
+                        setText(null);
+                        setStyle("");  // Reset cell style
+                    } else {
+                        Task task = getTableView().getItems().get(getIndex());
+                        setText(item);
+                        setStyle("-fx-background-color: " + toHexCode(task.getColor()));
+
+                    }
+                }
+            };
+        });
         tuesTwoTable.getColumns().add(tuesdayTwoColumn);
 
         TableColumn<Task, String> wednesdayTwoColumn = new TableColumn<Task, String>("wed");
         wednesdayTwoColumn.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
         wednesdayTwoColumn.setPrefWidth(82);
+        wednesdayTwoColumn.setCellFactory(column -> {
+            return new TextFieldTableCell<Task, String>() {
+                @Override
+                public void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    if (empty || item == null) {
+                        setText(null);
+                        setStyle("");  // Reset cell style
+                    } else {
+                        Task task = getTableView().getItems().get(getIndex());
+                        setText(item);
+                        setStyle("-fx-background-color: " + toHexCode(task.getColor()));
+
+                    }
+                }
+            };
+        });
         wedTwoTable.getColumns().add(wednesdayTwoColumn);
 
         TableColumn<Task, String> thursdayTwoColumn = new TableColumn<Task, String>("thurs");
         thursdayTwoColumn.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
         thursdayTwoColumn.setPrefWidth(82);
+        thursdayTwoColumn.setCellFactory(column -> {
+            return new TextFieldTableCell<Task, String>() {
+                @Override
+                public void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    if (empty || item == null) {
+                        setText(null);
+                        setStyle("");  // Reset cell style
+                    } else {
+                        Task task = getTableView().getItems().get(getIndex());
+                        setText(item);
+                        setStyle("-fx-background-color: " + toHexCode(task.getColor()));
+
+                    }
+                }
+            };
+        });
         thursTwoTable.getColumns().add(thursdayTwoColumn);
 
         TableColumn<Task, String> fridayTwoColumn = new TableColumn<Task, String>("fri");
         fridayTwoColumn.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
         fridayTwoColumn.setPrefWidth(82);
+        fridayTwoColumn.setCellFactory(column -> {
+            return new TextFieldTableCell<Task, String>() {
+                @Override
+                public void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    if (empty || item == null) {
+                        setText(null);
+                        setStyle("");  // Reset cell style
+                    } else {
+                        Task task = getTableView().getItems().get(getIndex());
+                        setText(item);
+                        setStyle("-fx-background-color: " + toHexCode(task.getColor()));
+
+                    }
+                }
+            };
+        });
         friTwoTable.getColumns().add(fridayTwoColumn);
 
         TableColumn<Task, String> saturdayTwoColumn = new TableColumn<Task, String>("sat");
         saturdayTwoColumn.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
         saturdayTwoColumn.setPrefWidth(82);
+
+        // Set cell factory to change cell color
+        saturdayTwoColumn.setCellFactory(column -> {
+            return new TextFieldTableCell<Task, String>() {
+                @Override
+                public void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    if (empty || item == null) {
+                        setText(null);
+                        setStyle("");  // Reset cell style
+                    } else {
+                        Task task = getTableView().getItems().get(getIndex());
+                        setText(item);
+                        setStyle("-fx-background-color: " + toHexCode(task.getColor()));
+
+                    }
+                }
+            };
+        });
+
         satTwoTable.getColumns().add(saturdayTwoColumn);
 
         weekTwoHBox.getChildren().add(sunTwoTable);
@@ -202,13 +309,6 @@ public class CalendarController {
 
         //week 3
 
-        sunThreeTable.setPrefWidth(82);
-        monThreeTable.setPrefWidth(82);
-        tuesThreeTable.setPrefWidth(82);
-        wedThreeTable.setPrefWidth(82);
-        thursThreeTable.setPrefWidth(82);
-        friThreeTable.setPrefWidth(82);
-        satThreeTable.setPrefWidth(82);
 
         TableColumn<Task, String> sundayThreeColumn = new TableColumn<Task, String>("sun");
         sundayThreeColumn.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
@@ -253,15 +353,8 @@ public class CalendarController {
         weekThreeHBox.getChildren().add(friThreeTable);
         weekThreeHBox.getChildren().add(satThreeTable);
 
-        //week 4
 
-        sunFourTable.setPrefWidth(82);
-        monFourTable.setPrefWidth(82);
-        tuesFourTable.setPrefWidth(82);
-        wedFourTable.setPrefWidth(82);
-        thursFourTable.setPrefWidth(82);
-        friFourTable.setPrefWidth(82);
-        satFourTable.setPrefWidth(82);
+        //week 4
 
         TableColumn<Task, String> sundayFourColumn = new TableColumn<Task, String>("sun");
         sundayFourColumn.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
@@ -305,18 +398,52 @@ public class CalendarController {
         weekFourHBox.getChildren().add(thursFourTable);
         weekFourHBox.getChildren().add(friFourTable);
         weekFourHBox.getChildren().add(satFourTable);
+*/
 
+        for (int i = 0; i < 7; i++) {
+            TableColumn<Task, String> column = new TableColumn<Task, String>(getDay(i));
+            column.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
+            column.setPrefWidth(82);
+            for (HBox hBox : Arrays.asList(weekOneHBox, weekTwoHBox, weekThreeHBox, weekFourHBox)) {
+                hBox.getChildren().add(column);
+            }
+        }
 
+        updateCalendar();
     }
+
+    private String getDay(int i) {
+            switch (i) {
+                case 0:
+                    return "mon";
+                case 1:
+                    return "tues";
+                case 2:
+                    return "wed";
+                case 3:
+                    return "thurs";
+                case 4:
+                    return "fri";
+                case 5:
+                    return "sat";
+                case 6:
+                    return "sun";
+                default:
+                    return "";
+            }
+        }
+
 
     public void taskBtn(ActionEvent actionEvent) {
         makeDialog();
     }
 
-    public void addTaskAction(ActionEvent actionEvent) {
-        makeDialog();
+    private String toHexCode(Color color) {
+        return String.format("#%02X%02X%02X",
+                (int) (color.getRed() * 255),
+                (int) (color.getGreen() * 255),
+                (int) (color.getBlue() * 255));
     }
-
 
     public void makeDialog() {
 
@@ -344,7 +471,10 @@ public class CalendarController {
         Label expectedTimeTaken = new Label("Expected time(hrs)");
         Spinner<Double> timeExpected = new Spinner<>(0.50, 10, 0);
 
-        dialogPane.setContent(new VBox(taskLabel, task, detailsLabel, detail, dueDateLabel, dueDate, expectedTimeTaken, timeExpected));
+        Label maxHoursPerTask = new Label("max hours per task on calendar");
+        TextField maxHours = new TextField("");
+
+        dialogPane.setContent(new VBox(taskLabel, task, detailsLabel, detail, dueDateLabel, dueDate, expectedTimeTaken, timeExpected, maxHoursPerTask,maxHours));
         //make an ok button
         final Button btOk = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
         //Create what you want it to do when you click the button
@@ -354,20 +484,12 @@ public class CalendarController {
                     if (!detail.getText().equals("") && !task.getText().equals("") && dueDate.getValue() != null) { // if all your fields and things ARENT EMPTY
                         LocalDate date = dueDate.getValue();
                         //read them all text fields and make a new object.
-                        tasks.add(new Task(task.getText(), detail.getText(), dueDate.getValue(), timeExpected.getValue()));
-
+                        int tasksToMake = (int) Math.ceil(timeExpected.getValue())/Integer.parseInt(maxHours.getText());
+                        for(int i = 0; i< tasksToMake;i++){
+                            tasks.add(new Task(task.getText(), detail.getText(), dueDate.getValue().minusDays(i), timeExpected.getValue()));
+                        }
 
                         updateCalendar();
-
-                        //..
-
-
-                        //try {
-                        //saveJson(new ActionEvent()); //try to save the json again so it keeps the new course.
-                        //} catch (IOException e) {
-                        //e.printStackTrace();
-                        //}
-
 
                     } else { //else if some text field is empty or incorrect. give them an error message
                         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -387,7 +509,7 @@ public class CalendarController {
                 });
         Optional<Task> optionalResult = dialog.showAndWait(); //show the dialog.
 
-        }
+    }
 
     private void updateCalendar() {
         /**
@@ -405,93 +527,63 @@ public class CalendarController {
         for (Task t : tasks) {
             //Find Week Number
             //https://www.baeldung.com/java-get-week-number
-            LocalDate localDate = LocalDate.now();
             Calendar calendar = Calendar.getInstance(Locale.US);
-            calendar.set(t.getDueDate().getYear(),t.getDueDate().getMonthValue(),t.getDueDate().getDayOfMonth());
-            int weekOfMonth = calendar.get(Calendar.WEEK_OF_MONTH)-1;
+            calendar.set(t.getDueDate().getYear(), t.getDueDate().getMonthValue() - 1, t.getDueDate().getDayOfMonth());
+            int weekOfMonth = calendar.get(Calendar.WEEK_OF_MONTH) - 1;
 
             if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Monday"))) {
                 mondayTables[weekOfMonth].getItems().add(t);
+                System.out.println(t.getDueDate());
+                System.out.println("Week: "+weekOfMonth);
             } else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Tuesday"))) {
                 tuesdayTables[weekOfMonth].getItems().add(t);
+                System.out.println(t.getDueDate());
+                System.out.println("Week: "+weekOfMonth);
             } else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Wednesday"))) {
                 wednesdayTables[weekOfMonth].getItems().add(t);
+                System.out.println(t.getDueDate());
+                System.out.println("Week: "+weekOfMonth);
             } else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Thursday"))) {
                 thursdayTables[weekOfMonth].getItems().add(t);
+                System.out.println(t.getDueDate());
+                System.out.println("Week: "+weekOfMonth);
             } else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Friday"))) {
                 fridayTables[weekOfMonth].getItems().add(t);
+                System.out.println(t.getDueDate());
+                System.out.println("Week: "+weekOfMonth);
             } else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Saturday"))) {
                 saturdayTables[weekOfMonth].getItems().add(t);
+                System.out.println(t.getDueDate());
+                System.out.println("Week: "+weekOfMonth);
             } else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Sunday"))) {
                 sundayTables[weekOfMonth].getItems().add(t);
+                System.out.println(t.getDueDate());
+                System.out.println("Week: "+weekOfMonth);
             }
         }
     }
-}
 
- /**   private void loadTasks() {
+
+    private void loadTasks() {
         // load tasks from saved file
         //open and read Json for any previous saved data
         Gson gson = new Gson();
-        try(Reader reader = new FileReader("tasks.json")){
+        try (Reader reader = new FileReader("tasks.json")) {
             //convert JSON file to Java object
             ArrayList<Task> imports = gson.fromJson(reader, new TypeToken<ArrayList<Task>>() {
             }.getType());
             tasks = FXCollections.observableArrayList(imports);
-        }catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
-  }
-  It doesn't work too
-*/
+    }
 
- //Algorithm to rearrange the task into a productive and time efficient way
-
-/**
- *    **THE PROGRAM SHOULD RESPECT THE 1 HOUR OF PERSONAL TIME IN WEEK DAYS AND THE 3 HOURS OF PERSONAL TIME DURING THE WEEKEND**
- *    (the user could also decide how much of personal time they could have during the weekends or tell the program when
- *    they have an important meeting therefore the time they have available for to accomplish tasks must be shorten)
- */
-
-/** 0. Set the available time to accomplish tasks during the week to 5.30 hours
- *     Set the available time to accomplish tasks during the weekend to 11.30 hours
-  */
-
-/**
- * 1. Get tasks from the Json File
- */
-
- /**
- * 2. Select the ones that are close to the due date and the ones that are more than 2 hours of expected time
- */
-
- /**
- * 3. The tasks that are 0.50 or under 1.50 hours are to be placed close to the due date
- */
-
-/**
- * 4. If the task will take 2 - 3 hours ask the user if they want to split the time between two different days or keep it all in one day
- *      If the user wants to keep it all in one day follow the procedure of step 3 : place it close to the due date or any empty space available
- *      If the user wants to split it into two days follow the procedure of step 4
- */
+    public void deleteBtn(ActionEvent event) {
 
 
- /**
-  * 5. If the task will take 3.5 - 4 hours split it into two and place the task once at 2 days before deadline and again at 1 day before deadline
-  */
+         }
 
-/**
- * 6. If the task will take 4.5 - 10 hours split the time into different days before the day of the deadline = 1 hour per day (those tasks that take whole
- *    number plus 0.50 eg:4.5,just add the plus 0.50 hours to any date between those days elected that has less tasks due)
- */
-
-/**
- * 7. To print the tasks into the weekly planner,the program must arrange the elected tasks from less time expected eg:0.50 to more time expected eg:1 hour
- *     meaning that the ones that take less to accomplish will be at the top of the table.
- */
-
-
-
+}
 
 
 
