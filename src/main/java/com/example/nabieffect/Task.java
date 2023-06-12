@@ -1,5 +1,7 @@
 package com.example.nabieffect;
 
+import javafx.scene.paint.Color;
+
 import java.time.LocalDate;
 
 public class Task {
@@ -7,18 +9,30 @@ public class Task {
     String taskDetails;
     LocalDate dueDate;
     double expectedTime;
+    Color color;
 
     public Task(String task, String taskDetails, LocalDate dueDate, double expectedTime) {
         this.task = task;
         this.taskDetails = taskDetails;
         this.dueDate = dueDate;
         this.expectedTime = expectedTime;
+        if(expectedTime<1){
+            this.color = Color.GREEN;
+        }else if(expectedTime<2){
+            this.color = Color.ORANGE;
+        }else{
+            this.color = Color.RED;
+        }
     }
 
     // get method = accessor
     // set method = mutator
     public LocalDate getDueDate() {
         return dueDate;
+    }
+
+    public Color getColor() {
+        return color;
     }
 
     public void setDueDate(LocalDate dueDate) {

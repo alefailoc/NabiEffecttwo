@@ -18,11 +18,9 @@ import java.io.IOException;
 import java.io.Reader;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
-import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAdjusters;
-import java.time.temporal.TemporalField;
-import java.time.temporal.WeekFields;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.HashMap;
@@ -30,9 +28,8 @@ import java.util.HashMap;
 import static com.example.nabieffect.StartApplication.tasks;
 
 public class TimeTableController {
-    public HBox weekendHBox;
-    public HBox weekdayHBox;
-    TableColumn<Task, String> mondayColumn = new TableColumn<Task, String>("Monday");
+
+    public HBox weekHBox;
     TableView<Task> mondayTable = new TableView<Task>();
     TableView<Task> tuesdayTable = new TableView<Task>();
     TableView<Task> wednesdayTable = new TableView<Task>();
@@ -40,11 +37,6 @@ public class TimeTableController {
     TableView<Task> fridayTable = new TableView<Task>();
     TableView<Task> saturdayTable = new TableView<Task>();
     TableView<Task> sundayTable = new TableView<Task>();
-    @FXML
-    private Label welcomeText;
-
-    public TimeTableController() {
-    }
 
     @FXML
     protected void monthBtn() throws IOException {
@@ -53,8 +45,12 @@ public class TimeTableController {
 
     public void initialize() {
 
-        //Week code, tables
 
+        TableColumn<Task, String> sundayColumn = new TableColumn<Task, String>("Sunday");
+        sundayColumn.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
+        sundayColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+
+        TableColumn<Task, String> mondayColumn = new TableColumn<Task, String>("Monday");
         mondayColumn.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
         mondayColumn.setCellFactory(TextFieldTableCell.forTableColumn());
 
@@ -78,130 +74,117 @@ public class TimeTableController {
         saturdayColumn.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
         saturdayColumn.setCellFactory(TextFieldTableCell.forTableColumn());
 
-        TableColumn<Task, String> sundayColumn = new TableColumn<Task, String>("Sunday");
-        sundayColumn.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
-        sundayColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-
+        sundayTable.getColumns().add(sundayColumn);
         mondayTable.getColumns().add(mondayColumn);
         tuesdayTable.getColumns().add(tuesdayColumn);
         wednesdayTable.getColumns().add(wednesdayColumn);
         thursdayTable.getColumns().add(thursdayColumn);
         fridayTable.getColumns().add(fridayColumn);
         saturdayTable.getColumns().add(saturdayColumn);
-        sundayTable.getColumns().add(sundayColumn);
 
+        sundayTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         mondayTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         tuesdayTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         wednesdayTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         thursdayTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         fridayTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         saturdayTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        sundayTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-        weekdayHBox.getChildren().add(mondayTable);
-        weekdayHBox.getChildren().add(tuesdayTable);
-        weekdayHBox.getChildren().add(wednesdayTable);
-        weekdayHBox.getChildren().add(thursdayTable);
-        weekdayHBox.getChildren().add(fridayTable);
-        weekdayHBox.getChildren().add(saturdayTable);
-        weekdayHBox.getChildren().add(sundayTable);
+        weekHBox.getChildren().add(sundayTable);
+        weekHBox.getChildren().add(mondayTable);
+        weekHBox.getChildren().add(tuesdayTable);
+        weekHBox.getChildren().add(wednesdayTable);
+        weekHBox.getChildren().add(thursdayTable);
+        weekHBox.getChildren().add(fridayTable);
+        weekHBox.getChildren().add(saturdayTable);
 
         /**
-         * 1.What is the current week date starting from the sunday.
+         * 1. what is the current week date starting from the sunday.
+         * https://www.baeldung.com/java-first-day-of-the-week
          **/
         LocalDate localDate = LocalDate.now();
         DayOfWeek weekStart = DayOfWeek.SUNDAY;
         LocalDate localStartOfWeekDate = localDate.with(TemporalAdjusters.previousOrSame(weekStart));
         System.out.println(localStartOfWeekDate);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("eeee d");
+        sundayColumn.setText(formatWithOrdinal(localStartOfWeekDate, formatter));
+        mondayColumn.setText(formatWithOrdinal(localStartOfWeekDate.plusDays(1), formatter));
+        tuesdayColumn.setText(formatWithOrdinal(localStartOfWeekDate.plusDays(2), formatter));
+        wednesdayColumn.setText(formatWithOrdinal(localStartOfWeekDate.plusDays(3), formatter));
+        thursdayColumn.setText(formatWithOrdinal(localStartOfWeekDate.plusDays(4), formatter));
+        fridayColumn.setText(formatWithOrdinal(localStartOfWeekDate.plusDays(5), formatter));
+        saturdayColumn.setText(formatWithOrdinal(localStartOfWeekDate.plusDays(6), formatter));
+
         /**
-         * 2.from the first date , calculate the last day of the week by adding 6
+         * 2. from the first date, calculate the last day of the week by adding 6
          **/
         LocalDate localEndOfWeekDate = localStartOfWeekDate.plusDays(6);
         System.out.println(localEndOfWeekDate);
 
         /**
-         * 3.Go through all the tasks and check if it is within the boundaries of the week
-         * add the tasks to the correct column for the day
-         */
-        for (Task t:tasks){
-            //Start of week
+         * 3. go through all the tasks and check if it is within the boundaries of the week.
+         * https://howtodoinjava.com/java/date-time/compare-localdates/
+         **/
+        for (Task t:tasks) {
+            //start of week
             boolean taskAfterCurrentWeekStart = t.getDueDate().isAfter(localStartOfWeekDate);
             boolean taskOnCurrentWeekStart = t.getDueDate().isEqual(localStartOfWeekDate);
 
-            // End of week
-            boolean taskBeforeCurrentWeekEnd = t.getDueDate().isBefore(localStartOfWeekDate);
-            boolean taskOnCurrentWeekEnd = t.getDueDate().isEqual(localStartOfWeekDate);
+            //end of week
+            boolean taskBeforeCurrentWeekEnd = t.getDueDate().isBefore(localEndOfWeekDate);
+            boolean taskOnCurrentWeekEnd = t.getDueDate().isEqual(localEndOfWeekDate);
 
-            if(((taskAfterCurrentWeekStart||taskOnCurrentWeekStart)&&(taskBeforeCurrentWeekEnd||taskOnCurrentWeekEnd))){
+            if((taskAfterCurrentWeekStart||taskOnCurrentWeekStart)&&(taskBeforeCurrentWeekEnd||taskOnCurrentWeekEnd)){
 
                 /**
-                 * 4.add the tasks to the correct table column.
-                  **/
-
-                    if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Monday"))) {
-                       /** chatGPT told me to add the code below so the table headline would have the correct date number
-                        * mondayColumn.setText("Monday" + t.dueDate.getDayOfMonth());
-                        * It doesn't work
-                        */
-                        mondayTable.getItems().add(t);
-                    } else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Tuesday"))) {
-                        tuesdayTable.getItems().add(t);
-                    } else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Wednesday"))) {
-                        wednesdayTable.getItems().add(t);
-                    } else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Thursday"))) {
-                        thursdayTable.getItems().add(t);
-                    } else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Friday"))) {
-                        fridayTable.getItems().add(t);
-                    } else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Saturday"))) {
-                        saturdayTable.getItems().add(t);
-                    } else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Sunday"))) {
-                        sundayTable.getItems().add(t);
-                    }
-
-
-
+                 * 4. add the tasks to the correct column for the day.
+                 **/
+                if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Sunday"))) {
+                    sundayTable.getItems().add(t);
+                }else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Monday"))) {
+                    mondayTable.getItems().add(t);
+                } else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Tuesday"))) {
+                    tuesdayTable.getItems().add(t);
+                } else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Wednesday"))) {
+                    wednesdayTable.getItems().add(t);
+                } else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Thursday"))) {
+                    thursdayTable.getItems().add(t);
+                } else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Friday"))) {
+                    fridayTable.getItems().add(t);
+                } else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Saturday"))) {
+                    saturdayTable.getItems().add(t);
+                }
             }
         }
+
     }
+    public static String formatWithOrdinal(LocalDate date, DateTimeFormatter formatter) {
+        int dayOfMonth = date.getDayOfMonth();
+        String ordinalSuffix;
 
-    private void updateCalendar() {
-        /**
-         * clear all tasks
-         * go through all the list of tasks
-         *      if the task is this monday
-         *          add it to the monday column
-         *
-         *     if the task is tuesday
-         *          add task to tuesday column
-         *     ect...
-         */
-        // mondayTable.getColumns().clear();
-
-        LocalDate now = LocalDate.now();
-
-
-        for (Task t : tasks) {
-            if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Monday"))) {
-                mondayTable.getItems().add(t);
-            } else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Tuesday"))) {
-                tuesdayTable.getItems().add(t);
-            } else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Wednesday"))) {
-                wednesdayTable.getItems().add(t);
-            } else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Thursday"))) {
-                thursdayTable.getItems().add(t);
-            } else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Friday"))) {
-                fridayTable.getItems().add(t);
-            } else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Saturday"))) {
-                saturdayTable.getItems().add(t);
-            } else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Sunday"))) {
-                sundayTable.getItems().add(t);
+        if (dayOfMonth >= 11 && dayOfMonth <= 13) {
+            ordinalSuffix = "th";
+        } else {
+            int lastDigit = dayOfMonth % 10;
+            switch (lastDigit) {
+                case 1:
+                    ordinalSuffix = "st";
+                    break;
+                case 2:
+                    ordinalSuffix = "nd";
+                    break;
+                case 3:
+                    ordinalSuffix = "rd";
+                    break;
+                default:
+                    ordinalSuffix = "th";
+                    break;
             }
         }
-    }
 
-    public void monthBtn(ActionEvent actionEvent) throws IOException {
-        monthBtn();
-
+        String formattedDate = date.format(formatter);
+        return formattedDate + ordinalSuffix;
     }
 }
 

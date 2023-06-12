@@ -8,6 +8,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -31,6 +32,10 @@ public class CalendarController {
     public HBox weekTwoHBox;
     public HBox weekThreeHBox;
     public HBox weekFourHBox;
+
+    ArrayList<HBox> myHBoxes = new ArrayList<>();
+
+    /*
     TableView<Task> sunOneTable = new TableView<Task>();
     TableView<Task> monOneTable = new TableView<Task>();
     TableView<Task> tuesOneTable = new TableView<Task>();
@@ -79,7 +84,7 @@ public class CalendarController {
     TableView[] saturdayTables = {satOneTable, satTwoTable, satThreeTable, satFourTable};
     //Sunday
     TableView[] sundayTables = {sunOneTable, sunTwoTable, sunThreeTable, sunFourTable};
-
+*/
 
     @FXML
     protected void monthBtn() throws IOException {
@@ -88,6 +93,10 @@ public class CalendarController {
 
     public void initialize() {
         loadTasks();
+        myHBoxes.add(weekOneHBox);
+        myHBoxes.add(weekTwoHBox);
+        myHBoxes.add(weekThreeHBox);
+        myHBoxes.add(weekFourHBox);
 /**
         TableColumn<Task, String> sundayColumn = new TableColumn<Task, String>("sun");
         sundayColumn.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
@@ -400,14 +409,50 @@ public class CalendarController {
         weekFourHBox.getChildren().add(satFourTable);
 */
 
-        for (int i = 0; i < 7; i++) {
-            TableColumn<Task, String> column = new TableColumn<Task, String>(getDay(i));
-            column.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
-            column.setPrefWidth(82);
-            for (HBox hBox : Arrays.asList(weekOneHBox, weekTwoHBox, weekThreeHBox, weekFourHBox)) {
-                hBox.getChildren().add(column);
+
+
+/*
+
+1. For each HBox
+    2. create 7 tables
+    3.  for each table create one column
+    4. ADD the column to the table
+    5. add the table to the hbox
+
+    */
+        for (HBox hBox: myHBoxes ) {
+            for (int i = 0; i < 7; i++) {
+                TableView<Task> currentDayTable = new TableView<Task>();
+                TableColumn<Task, String> column = new TableColumn<Task, String>(getDay(i));
+                column.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
+                column.setPrefWidth(82);
+
+                column.setCellFactory(currentColumn -> {
+                    return new TextFieldTableCell<Task, String>() {
+                        @Override
+                        public void updateItem(String item, boolean empty) {
+                            super.updateItem(item, empty);
+
+                            if (empty || item == null) {
+                                setText(null);
+                                setStyle("");  // Reset cell style
+                            } else {
+                                Task task = getTableView().getItems().get(getIndex());
+                                setText(item);
+                                setStyle("-fx-background-color: " + toHexCode(task.getColor()));
+
+                            }
+                        }
+                    };
+                });
+
+                currentDayTable.getColumns().add(column);
+                //weekOneHBox.getChildren().add(currentDayTable);
+                hBox.getChildren().add(currentDayTable);
             }
+
         }
+
 
         updateCalendar();
     }
@@ -511,6 +556,8 @@ public class CalendarController {
 
     }
 
+
+
     private void updateCalendar() {
         /**
          * clear all tasks
@@ -524,6 +571,7 @@ public class CalendarController {
          */
         // mondayTable.getColumns().clear();
 
+
         for (Task t : tasks) {
             //Find Week Number
             //https://www.baeldung.com/java-get-week-number
@@ -532,7 +580,8 @@ public class CalendarController {
             int weekOfMonth = calendar.get(Calendar.WEEK_OF_MONTH) - 1;
 
             if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Monday"))) {
-                mondayTables[weekOfMonth].getItems().add(t);
+                TableColumn<Task, String> currentColumn = (TableColumn) myHBoxes.get(weekOfMonth).getChildren().get(0);
+
                 System.out.println(t.getDueDate());
                 System.out.println("Week: "+weekOfMonth);
             } else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Tuesday"))) {
@@ -561,7 +610,8 @@ public class CalendarController {
                 System.out.println("Week: "+weekOfMonth);
             }
         }
-    }
+
+         }
 
 
     private void loadTasks() {
