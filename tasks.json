@@ -14,5 +14,53 @@
       "blue": 0.0,
       "opacity": 1.0
     }
+  },
+  {
+    "task": "iohuh",
+    "taskDetails": "hiho",
+    "dueDate": {
+      "year": 2023,
+      "month": 6,
+      "day": 21
+    },
+    "expectedTime": 2.5,
+    "color": {
+      "red": 1.0,
+      "green": 0.0,
+      "blue": 0.0,
+      "opacity": 1.0
+    }
+  },
+  {
+    "task": "iohuh",
+    "taskDetails": "hiho",
+    "dueDate": {
+      "year": 2023,
+      "month": 6,
+      "day": 20
+    },
+    "expectedTime": 2.5,
+    "color": {
+      "red": 1.0,
+      "green": 0.0,
+      "blue": 0.0,
+      "opacity": 1.0
+    }
+  },
+  {
+    "task": "iohuh",
+    "taskDetails": "hiho",
+    "dueDate": {
+      "year": 2023,
+      "month": 6,
+      "day": 19
+    },
+    "expectedTime": 2.5,
+    "color": {
+      "red": 1.0,
+      "green": 0.0,
+      "blue": 0.0,
+      "opacity": 1.0
+    }
   }
 ]

@@ -6,9 +6,12 @@ import com.google.gson.reflect.TypeToken;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -32,59 +35,10 @@ public class CalendarController {
     public HBox weekTwoHBox;
     public HBox weekThreeHBox;
     public HBox weekFourHBox;
+    public AnchorPane mainPane;
+    public ColorPicker colourPicker;
 
     ArrayList<HBox> myHBoxes = new ArrayList<>();
-
-    /*
-    TableView<Task> sunOneTable = new TableView<Task>();
-    TableView<Task> monOneTable = new TableView<Task>();
-    TableView<Task> tuesOneTable = new TableView<Task>();
-    TableView<Task> wedOneTable = new TableView<Task>();
-    TableView<Task> thursOneTable = new TableView<Task>();
-    TableView<Task> friOneTable = new TableView<Task>();
-    TableView<Task> satOneTable = new TableView<Task>();
-
-    TableView<Task> sunTwoTable = new TableView<Task>();
-    TableView<Task> monTwoTable = new TableView<Task>();
-    TableView<Task> tuesTwoTable = new TableView<Task>();
-    TableView<Task> wedTwoTable = new TableView<Task>();
-    TableView<Task> thursTwoTable = new TableView<Task>();
-    TableView<Task> friTwoTable = new TableView<Task>();
-    TableView<Task> satTwoTable = new TableView<Task>();
-
-    TableView<Task> sunThreeTable = new TableView<Task>();
-    TableView<Task> monThreeTable = new TableView<Task>();
-    TableView<Task> tuesThreeTable = new TableView<Task>();
-    TableView<Task> wedThreeTable = new TableView<Task>();
-    TableView<Task> thursThreeTable = new TableView<Task>();
-    TableView<Task> friThreeTable = new TableView<Task>();
-    TableView<Task> satThreeTable = new TableView<Task>();
-
-
-    TableView<Task> sunFourTable = new TableView<Task>();
-    TableView<Task> monFourTable = new TableView<Task>();
-    TableView<Task> tuesFourTable = new TableView<Task>();
-    TableView<Task> wedFourTable = new TableView<Task>();
-    TableView<Task> thursFourTable = new TableView<Task>();
-    TableView<Task> friFourTable = new TableView<Task>();
-    TableView<Task> satFourTable = new TableView<Task>();
-
-
-    //Monday
-    TableView[] mondayTables = {monOneTable, monTwoTable, monThreeTable, monFourTable};
-    //Tuesday
-    TableView[] tuesdayTables = {tuesOneTable, tuesTwoTable, tuesThreeTable, tuesFourTable};
-    //Wednesday
-    TableView[] wednesdayTables = {wedOneTable, wedTwoTable, wedThreeTable, wedFourTable};
-    //Thursday
-    TableView[] thursdayTables = {thursOneTable, thursTwoTable, thursThreeTable, thursFourTable};
-    //Friday
-    TableView[] fridayTables = {friOneTable, friTwoTable, friThreeTable, friFourTable};
-    //Saturday
-    TableView[] saturdayTables = {satOneTable, satTwoTable, satThreeTable, satFourTable};
-    //Sunday
-    TableView[] sundayTables = {sunOneTable, sunTwoTable, sunThreeTable, sunFourTable};
-*/
 
     @FXML
     protected void monthBtn() throws IOException {
@@ -97,319 +51,6 @@ public class CalendarController {
         myHBoxes.add(weekTwoHBox);
         myHBoxes.add(weekThreeHBox);
         myHBoxes.add(weekFourHBox);
-/**
-        TableColumn<Task, String> sundayColumn = new TableColumn<Task, String>("sun");
-        sundayColumn.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
-        sundayColumn.setPrefWidth(82);
-        sunOneTable.getColumns().add(sundayColumn);
-
-        TableColumn<Task, String> mondayColumn = new TableColumn<Task, String>("mon");
-        mondayColumn.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
-        mondayColumn.setPrefWidth(82);
-        monOneTable.getColumns().add(mondayColumn);
-
-        TableColumn<Task, String> tuesdayColumn = new TableColumn<Task, String>("tues");
-        tuesdayColumn.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
-        tuesdayColumn.setPrefWidth(82);
-        tuesOneTable.getColumns().add(tuesdayColumn);
-
-        TableColumn<Task, String> wednesdayColumn = new TableColumn<Task, String>("wed");
-        wednesdayColumn.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
-        wednesdayColumn.setPrefWidth(82);
-        wedOneTable.getColumns().add(wednesdayColumn);
-
-        TableColumn<Task, String> thursdayColumn = new TableColumn<Task, String>("thurs");
-        thursdayColumn.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
-        thursdayColumn.setPrefWidth(82);
-        thursOneTable.getColumns().add(thursdayColumn);
-
-        TableColumn<Task, String> fridayColumn = new TableColumn<Task, String>("fri");
-        fridayColumn.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
-        fridayColumn.setPrefWidth(82);
-        friOneTable.getColumns().add(fridayColumn);
-
-        TableColumn<Task, String> saturdayColumn = new TableColumn<Task, String>("sat");
-        saturdayColumn.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
-        saturdayColumn.setPrefWidth(82);
-        satOneTable.getColumns().add(saturdayColumn);
-
-        weekOneHBox.getChildren().add(sunOneTable);
-        weekOneHBox.getChildren().add(monOneTable);
-        weekOneHBox.getChildren().add(tuesOneTable);
-        weekOneHBox.getChildren().add(wedOneTable);
-        weekOneHBox.getChildren().add(thursOneTable);
-        weekOneHBox.getChildren().add(friOneTable);
-        weekOneHBox.getChildren().add(satOneTable);
-
-        // week 2
-
-
-        TableColumn<Task, String> sundayTwoColumn = new TableColumn<Task, String>("sun");
-        sundayTwoColumn.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
-        sundayTwoColumn.setPrefWidth(82);
-        sundayTwoColumn.setCellFactory(column -> {
-            return new TextFieldTableCell<Task, String>() {
-                @Override
-                public void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
-
-                    if (empty || item == null) {
-                        setText(null);
-                        setStyle("");  // Reset cell style
-                    } else {
-                        Task task = getTableView().getItems().get(getIndex());
-                        setText(item);
-                        setStyle("-fx-background-color: " + toHexCode(task.getColor()));
-
-                    }
-                }
-            };
-        });
-        sunTwoTable.getColumns().add(sundayTwoColumn);
-
-        TableColumn<Task, String> mondayTwoColumn = new TableColumn<Task, String>("mon");
-        mondayTwoColumn.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
-        mondayTwoColumn.setPrefWidth(82);
-        mondayTwoColumn.setCellFactory(column -> {
-            return new TextFieldTableCell<Task, String>() {
-                @Override
-                public void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
-
-                    if (empty || item == null) {
-                        setText(null);
-                        setStyle("");  // Reset cell style
-                    } else {
-                        Task task = getTableView().getItems().get(getIndex());
-                        setText(item);
-                        setStyle("-fx-background-color: " + toHexCode(task.getColor()));
-
-                    }
-                }
-            };
-        });
-        monTwoTable.getColumns().add(mondayTwoColumn);
-
-        TableColumn<Task, String> tuesdayTwoColumn = new TableColumn<Task, String>("tues");
-        tuesdayTwoColumn.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
-        tuesdayTwoColumn.setPrefWidth(82);
-        tuesdayTwoColumn.setCellFactory(column -> {
-            return new TextFieldTableCell<Task, String>() {
-                @Override
-                public void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
-
-                    if (empty || item == null) {
-                        setText(null);
-                        setStyle("");  // Reset cell style
-                    } else {
-                        Task task = getTableView().getItems().get(getIndex());
-                        setText(item);
-                        setStyle("-fx-background-color: " + toHexCode(task.getColor()));
-
-                    }
-                }
-            };
-        });
-        tuesTwoTable.getColumns().add(tuesdayTwoColumn);
-
-        TableColumn<Task, String> wednesdayTwoColumn = new TableColumn<Task, String>("wed");
-        wednesdayTwoColumn.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
-        wednesdayTwoColumn.setPrefWidth(82);
-        wednesdayTwoColumn.setCellFactory(column -> {
-            return new TextFieldTableCell<Task, String>() {
-                @Override
-                public void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
-
-                    if (empty || item == null) {
-                        setText(null);
-                        setStyle("");  // Reset cell style
-                    } else {
-                        Task task = getTableView().getItems().get(getIndex());
-                        setText(item);
-                        setStyle("-fx-background-color: " + toHexCode(task.getColor()));
-
-                    }
-                }
-            };
-        });
-        wedTwoTable.getColumns().add(wednesdayTwoColumn);
-
-        TableColumn<Task, String> thursdayTwoColumn = new TableColumn<Task, String>("thurs");
-        thursdayTwoColumn.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
-        thursdayTwoColumn.setPrefWidth(82);
-        thursdayTwoColumn.setCellFactory(column -> {
-            return new TextFieldTableCell<Task, String>() {
-                @Override
-                public void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
-
-                    if (empty || item == null) {
-                        setText(null);
-                        setStyle("");  // Reset cell style
-                    } else {
-                        Task task = getTableView().getItems().get(getIndex());
-                        setText(item);
-                        setStyle("-fx-background-color: " + toHexCode(task.getColor()));
-
-                    }
-                }
-            };
-        });
-        thursTwoTable.getColumns().add(thursdayTwoColumn);
-
-        TableColumn<Task, String> fridayTwoColumn = new TableColumn<Task, String>("fri");
-        fridayTwoColumn.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
-        fridayTwoColumn.setPrefWidth(82);
-        fridayTwoColumn.setCellFactory(column -> {
-            return new TextFieldTableCell<Task, String>() {
-                @Override
-                public void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
-
-                    if (empty || item == null) {
-                        setText(null);
-                        setStyle("");  // Reset cell style
-                    } else {
-                        Task task = getTableView().getItems().get(getIndex());
-                        setText(item);
-                        setStyle("-fx-background-color: " + toHexCode(task.getColor()));
-
-                    }
-                }
-            };
-        });
-        friTwoTable.getColumns().add(fridayTwoColumn);
-
-        TableColumn<Task, String> saturdayTwoColumn = new TableColumn<Task, String>("sat");
-        saturdayTwoColumn.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
-        saturdayTwoColumn.setPrefWidth(82);
-
-        // Set cell factory to change cell color
-        saturdayTwoColumn.setCellFactory(column -> {
-            return new TextFieldTableCell<Task, String>() {
-                @Override
-                public void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
-
-                    if (empty || item == null) {
-                        setText(null);
-                        setStyle("");  // Reset cell style
-                    } else {
-                        Task task = getTableView().getItems().get(getIndex());
-                        setText(item);
-                        setStyle("-fx-background-color: " + toHexCode(task.getColor()));
-
-                    }
-                }
-            };
-        });
-
-        satTwoTable.getColumns().add(saturdayTwoColumn);
-
-        weekTwoHBox.getChildren().add(sunTwoTable);
-        weekTwoHBox.getChildren().add(monTwoTable);
-        weekTwoHBox.getChildren().add(tuesTwoTable);
-        weekTwoHBox.getChildren().add(wedTwoTable);
-        weekTwoHBox.getChildren().add(thursTwoTable);
-        weekTwoHBox.getChildren().add(friTwoTable);
-        weekTwoHBox.getChildren().add(satTwoTable);
-
-        //week 3
-
-
-        TableColumn<Task, String> sundayThreeColumn = new TableColumn<Task, String>("sun");
-        sundayThreeColumn.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
-        sundayThreeColumn.setPrefWidth(82);
-        sunThreeTable.getColumns().add(sundayThreeColumn);
-
-        TableColumn<Task, String> mondayThreeColumn = new TableColumn<Task, String>("mon");
-        mondayThreeColumn.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
-        mondayThreeColumn.setPrefWidth(82);
-        monThreeTable.getColumns().add(mondayThreeColumn);
-
-        TableColumn<Task, String> tuesdayThreeColumn = new TableColumn<Task, String>("tues");
-        tuesdayThreeColumn.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
-        tuesdayThreeColumn.setPrefWidth(82);
-        tuesThreeTable.getColumns().add(tuesdayThreeColumn);
-
-        TableColumn<Task, String> wednesdayThreeColumn = new TableColumn<Task, String>("wed");
-        wednesdayThreeColumn.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
-        wednesdayThreeColumn.setPrefWidth(82);
-        wedThreeTable.getColumns().add(wednesdayThreeColumn);
-
-        TableColumn<Task, String> thursdayThreeColumn = new TableColumn<Task, String>("thurs");
-        thursdayThreeColumn.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
-        thursdayThreeColumn.setPrefWidth(82);
-        thursThreeTable.getColumns().add(thursdayThreeColumn);
-
-        TableColumn<Task, String> fridayThreeColumn = new TableColumn<Task, String>("fri");
-        fridayThreeColumn.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
-        fridayThreeColumn.setPrefWidth(82);
-        friThreeTable.getColumns().add(fridayThreeColumn);
-
-        TableColumn<Task, String> saturdayThreeColumn = new TableColumn<Task, String>("sat");
-        saturdayThreeColumn.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
-        saturdayThreeColumn.setPrefWidth(82);
-        satThreeTable.getColumns().add(saturdayThreeColumn);
-
-        weekThreeHBox.getChildren().add(sunThreeTable);
-        weekThreeHBox.getChildren().add(monThreeTable);
-        weekThreeHBox.getChildren().add(tuesThreeTable);
-        weekThreeHBox.getChildren().add(wedThreeTable);
-        weekThreeHBox.getChildren().add(thursThreeTable);
-        weekThreeHBox.getChildren().add(friThreeTable);
-        weekThreeHBox.getChildren().add(satThreeTable);
-
-
-        //week 4
-
-        TableColumn<Task, String> sundayFourColumn = new TableColumn<Task, String>("sun");
-        sundayFourColumn.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
-        sundayFourColumn.setPrefWidth(82);
-        sunFourTable.getColumns().add(sundayFourColumn);
-
-        TableColumn<Task, String> mondayFourColumn = new TableColumn<Task, String>("mon");
-        mondayFourColumn.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
-        mondayFourColumn.setPrefWidth(82);
-        monFourTable.getColumns().add(mondayFourColumn);
-
-        TableColumn<Task, String> tuesdayFourColumn = new TableColumn<Task, String>("tues");
-        tuesdayFourColumn.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
-        tuesdayFourColumn.setPrefWidth(82);
-        tuesFourTable.getColumns().add(tuesdayFourColumn);
-
-        TableColumn<Task, String> wednesdayFourColumn = new TableColumn<Task, String>("wed");
-        wednesdayFourColumn.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
-        wednesdayFourColumn.setPrefWidth(82);
-        wedFourTable.getColumns().add(wednesdayFourColumn);
-
-        TableColumn<Task, String> thursdayFourColumn = new TableColumn<Task, String>("thurs");
-        thursdayFourColumn.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
-        thursdayFourColumn.setPrefWidth(82);
-        thursFourTable.getColumns().add(thursdayFourColumn);
-
-        TableColumn<Task, String> fridayFourColumn = new TableColumn<Task, String>("fri");
-        fridayFourColumn.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
-        fridayFourColumn.setPrefWidth(82);
-        friFourTable.getColumns().add(fridayFourColumn);
-
-        TableColumn<Task, String> saturdayFourColumn = new TableColumn<Task, String>("sat");
-        saturdayFourColumn.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
-        saturdayFourColumn.setPrefWidth(82);
-        satFourTable.getColumns().add(saturdayFourColumn);
-
-        weekFourHBox.getChildren().add(sunFourTable);
-        weekFourHBox.getChildren().add(monFourTable);
-        weekFourHBox.getChildren().add(tuesFourTable);
-        weekFourHBox.getChildren().add(wedFourTable);
-        weekFourHBox.getChildren().add(thursFourTable);
-        weekFourHBox.getChildren().add(friFourTable);
-        weekFourHBox.getChildren().add(satFourTable);
-*/
-
-
 
 /*
 
@@ -425,26 +66,7 @@ public class CalendarController {
                 TableView<Task> currentDayTable = new TableView<Task>();
                 TableColumn<Task, String> column = new TableColumn<Task, String>(getDay(i));
                 column.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
-                column.setPrefWidth(82);
-
-                column.setCellFactory(currentColumn -> {
-                    return new TextFieldTableCell<Task, String>() {
-                        @Override
-                        public void updateItem(String item, boolean empty) {
-                            super.updateItem(item, empty);
-
-                            if (empty || item == null) {
-                                setText(null);
-                                setStyle("");  // Reset cell style
-                            } else {
-                                Task task = getTableView().getItems().get(getIndex());
-                                setText(item);
-                                setStyle("-fx-background-color: " + toHexCode(task.getColor()));
-
-                            }
-                        }
-                    };
-                });
+                column.setPrefWidth(110);
 
                 currentDayTable.getColumns().add(column);
                 //weekOneHBox.getChildren().add(currentDayTable);
@@ -559,59 +181,89 @@ public class CalendarController {
 
 
     private void updateCalendar() {
-        /**
-         * clear all tasks
-         * go through all the list of tasks
-         *      if the task is this monday
-         *          add it to the monday column
-         *
-         *     if the task is tuesday
-         *          add task to tuesday column
-         *     ect...
-         */
-        // mondayTable.getColumns().clear();
+        //delete all tasks first
+        for (HBox hBox: myHBoxes ) {
+            for (int i = 0; i < 7; i++) {
+                TableView<Task> tableView =  (TableView<Task>) hBox.getChildren().get(i);
+                tableView.getColumns().removeAll();
+            }
+
+        }
 
 
         for (Task t : tasks) {
-            //Find Week Number
-            //https://www.baeldung.com/java-get-week-number
+            // Find Week Number
+            // https://www.baeldung.com/java-get-week-number
             Calendar calendar = Calendar.getInstance(Locale.US);
             calendar.set(t.getDueDate().getYear(), t.getDueDate().getMonthValue() - 1, t.getDueDate().getDayOfMonth());
             int weekOfMonth = calendar.get(Calendar.WEEK_OF_MONTH) - 1;
 
-            if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Monday"))) {
-                TableColumn<Task, String> currentColumn = (TableColumn) myHBoxes.get(weekOfMonth).getChildren().get(0);
+            int dayOfWeek = t.getDueDate().getDayOfWeek().getValue() - 1;
 
-                System.out.println(t.getDueDate());
-                System.out.println("Week: "+weekOfMonth);
-            } else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Tuesday"))) {
-                tuesdayTables[weekOfMonth].getItems().add(t);
-                System.out.println(t.getDueDate());
-                System.out.println("Week: "+weekOfMonth);
-            } else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Wednesday"))) {
-                wednesdayTables[weekOfMonth].getItems().add(t);
-                System.out.println(t.getDueDate());
-                System.out.println("Week: "+weekOfMonth);
-            } else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Thursday"))) {
-                thursdayTables[weekOfMonth].getItems().add(t);
-                System.out.println(t.getDueDate());
-                System.out.println("Week: "+weekOfMonth);
-            } else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Friday"))) {
-                fridayTables[weekOfMonth].getItems().add(t);
-                System.out.println(t.getDueDate());
-                System.out.println("Week: "+weekOfMonth);
-            } else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Saturday"))) {
-                saturdayTables[weekOfMonth].getItems().add(t);
-                System.out.println(t.getDueDate());
-                System.out.println("Week: "+weekOfMonth);
-            } else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Sunday"))) {
-                sundayTables[weekOfMonth].getItems().add(t);
-                System.out.println(t.getDueDate());
-                System.out.println("Week: "+weekOfMonth);
+            HBox currentHBox = myHBoxes.get(weekOfMonth);
+            if (currentHBox.getChildren().size() > dayOfWeek && currentHBox.getChildren().get(dayOfWeek) instanceof TableView) {
+                TableView<Task> tableView = (TableView<Task>) currentHBox.getChildren().get(dayOfWeek);
+                TableColumn<Task, String> column = (TableColumn<Task, String>) tableView.getColumns().get(0); // Assuming you have only one column
+
+                column.setCellFactory(columnData -> {
+                    TableCell<Task, String> cell = new TableCell<Task, String>() {
+                        @Override
+                        protected void updateItem(String item, boolean empty) {
+                            super.updateItem(item, empty);
+
+                            if (empty || item == null) {
+                                setText(null);
+                                setStyle("");  // Reset cell style
+                            } else {
+                                Task task = getTableView().getItems().get(getIndex());
+                                setText(item);
+                                setStyle("-fx-background-color: " + toHexCode(task.getColor()));
+
+                            }
+                        }
+                    };
+
+                    cell.setOnMouseClicked(event -> {
+                        if (event.getClickCount() == 2 && !cell.isEmpty()) {
+                            Task selectedTask = cell.getTableView().getItems().get(cell.getIndex());
+                            showTaskDetailsPopup(selectedTask);
+                        }
+                    });
+
+                    return cell;
+                });
+
+                tableView.getItems().add(t);
             }
         }
+    }
+    private void showTaskDetailsPopup(Task task) {
+        // Create a new stage for the pop-up window
+        Stage popupStage = new Stage();
+        popupStage.initModality(Modality.APPLICATION_MODAL);
+        popupStage.setTitle("Task Details");
 
-         }
+        // Create the content for the pop-up window
+        VBox popupContent = new VBox();
+        popupContent.setPadding(new Insets(10));
+        Label taskLabel = new Label("Task: " + task.getTask());
+        Label detailsLabel = new Label("Details: " + task.getTaskDetails());
+        Label dueDateLabel = new Label("Due Date: " + task.getDueDate().toString());
+        Label expectedTimeLabel = new Label("Expected Time: " + task.getExpectedTime() + " hrs");
+        Button delButton = new Button("Delete Task");
+        delButton.setOnAction(event -> {
+            tasks.remove(task);
+                    updateCalendar();
+        });
+        popupContent.getChildren().addAll(taskLabel, detailsLabel, dueDateLabel, expectedTimeLabel,delButton);
+
+        // Create the scene and set it to the stage
+        Scene popupScene = new Scene(popupContent, 300, 200);
+        popupStage.setScene(popupScene);
+
+        // Show the pop-up window
+        popupStage.showAndWait();
+    }
 
 
     private void loadTasks() {
@@ -633,6 +285,11 @@ public class CalendarController {
 
          }
 
+         //https://stackoverflow.com/questions/72583321/how-to-set-pane-colour-from-colour-picker
+    public void colourPickerAction(ActionEvent event) {
+        Color newColour = colourPicker.getValue();
+        mainPane.setStyle("-fx-background-color: " + toHexCode(newColour) + ";");
+    }
 }
 
 
