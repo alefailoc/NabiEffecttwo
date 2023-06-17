@@ -1,2 +1,18 @@
 [
+  {
+    "task": "aq",
+    "taskDetails": "aq",
+    "dueDate": {
+      "year": 2023,
+      "month": 6,
+      "day": 1
+    },
+    "expectedTime": 0.5,
+    "color": {
+      "red": 0.0,
+      "green": 0.5019608,
+      "blue": 0.0,
+      "opacity": 1.0
+    }
+  }
 ]

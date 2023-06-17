@@ -15,6 +15,13 @@ public class Task {
         this.task = task;
         this.taskDetails = taskDetails;
         this.dueDate = dueDate;
+/** if (dueDate = dueDate - 1 -->(previous day)){
+ * this.color = red
+   }else if (dueDate = dueDate - 5 -->(a week before)){
+   this.color = orange
+ }
+
+*/
         this.expectedTime = expectedTime;
         if(expectedTime<1){
             this.color = Color.GREEN;

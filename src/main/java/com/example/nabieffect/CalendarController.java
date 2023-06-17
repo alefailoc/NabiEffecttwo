@@ -222,12 +222,7 @@ public class CalendarController {
                             Task selectedTask = cell.getTableView().getItems().get(cell.getIndex());
                             showTaskDetailsPopup(selectedTask);
                         }
-
-                        Task selectedTask = cell.getTableView().getItems().get(cell.getIndex());
-                        tasks.remove(selectedTask);
-                        updateCalendar();
                     });
-
                     return cell;
                 });
 
@@ -253,7 +248,7 @@ public class CalendarController {
             tasks.remove(task);
             updateCalendar();
         });
-        Button saveBtn = new Button("Save");
+        Button saveBtn= new Button("Save");
         saveBtn.setOnAction(event -> {
             task.setTaskDetails(detailsTextField.getText());
             updateCalendar();
@@ -307,7 +302,6 @@ public class CalendarController {
     }
 
     public void deleteBtn(ActionEvent event) {
-
          }
 
          //https://stackoverflow.com/questions/72583321/how-to-set-pane-colour-from-colour-picker

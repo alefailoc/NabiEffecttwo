@@ -1,29 +1,18 @@
 package com.example.nabieffect;
-
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-
-import java.io.FileReader;
-import java.io.FileWriter;
+import javafx.scene.control.cell.PropertyValueFactory;
 import java.io.IOException;
-import java.io.Reader;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Locale;
-import java.util.Optional;
-import java.util.HashMap;
+
 
 import static com.example.nabieffect.StartApplication.tasks;
 
@@ -37,6 +26,10 @@ public class TimeTableController {
     TableView<Task> fridayTable = new TableView<Task>();
     TableView<Task> saturdayTable = new TableView<Task>();
     TableView<Task> sundayTable = new TableView<Task>();
+
+    //together
+    TableView[] weekTables = {mondayTable, tuesdayTable, wednesdayTable, thursdayTable};
+    // I thought that to add the double click feature pop up it will be easy to put all the table in one array
 
     @FXML
     protected void monthBtn() throws IOException {
@@ -154,8 +147,6 @@ public class TimeTableController {
                     fridayTable.getItems().add(t);
                 } else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Saturday"))) {
                     saturdayTable.getItems().add(t);
-
-
                 }
             }
         }
