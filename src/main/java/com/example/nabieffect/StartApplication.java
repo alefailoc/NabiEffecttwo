@@ -25,7 +25,7 @@ public class StartApplication extends Application {
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(StartApplication.class.getResource("calendar-view.fxml"));
         scene = new Scene((Parent)fxmlLoader.load());
-        stage.setTitle("Hello!");
+        stage.setTitle("hello!");
         stage.setScene(scene);
         stage.show();
     }

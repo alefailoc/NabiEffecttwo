@@ -1,5 +1,4 @@
 package com.example.nabieffect;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -10,20 +9,17 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.time.LocalDate;
-import java.time.format.TextStyle;
 import java.util.*;
 
 import static com.example.nabieffect.StartApplication.tasks;
@@ -74,7 +70,6 @@ public class CalendarController {
             }
 
         }
-
 
         updateCalendar();
     }
@@ -190,7 +185,6 @@ public class CalendarController {
 
         }
 
-
         for (Task t : tasks) {
             // Find Week Number
             // https://www.baeldung.com/java-get-week-number
@@ -228,6 +222,10 @@ public class CalendarController {
                             Task selectedTask = cell.getTableView().getItems().get(cell.getIndex());
                             showTaskDetailsPopup(selectedTask);
                         }
+
+                        Task selectedTask = cell.getTableView().getItems().get(cell.getIndex());
+                        tasks.remove(selectedTask);
+                        updateCalendar();
                     });
 
                     return cell;
@@ -237,25 +235,53 @@ public class CalendarController {
             }
         }
     }
+
     private void showTaskDetailsPopup(Task task) {
         // Create a new stage for the pop-up window
         Stage popupStage = new Stage();
         popupStage.initModality(Modality.APPLICATION_MODAL);
-        popupStage.setTitle("Task Details");
+        popupStage.setTitle(task.getTask());
+        // Create the content for the pop-up window
+        VBox popupContent = new VBox();
+        popupContent.setPadding(new Insets(10));
+        Label detailsLabel = new Label("Details:\n" + task.getTaskDetails());
+        Label dueDateLabel = new Label("\n \n \n " + "Due Date:  " + task.getDueDate().toString());
+        TextField detailsTextField = new TextField();
+        detailsTextField.setText(task.getTaskDetails());
+        Button delButton = new Button( "Delete Task");
+        delButton.setOnAction(event -> {
+            tasks.remove(task);
+            updateCalendar();
+        });
+        Button saveBtn = new Button("Save");
+        saveBtn.setOnAction(event -> {
+            task.setTaskDetails(detailsTextField.getText());
+            updateCalendar();
+        });
+        popupContent.getChildren().addAll(detailsLabel, dueDateLabel,detailsTextField,delButton,saveBtn);
+        // Create the scene and set it to the stage
+        Scene popupScene = new Scene(popupContent, 300, 200);
+        popupStage.setScene(popupScene);
+        // Show the pop-up window
+        popupStage.showAndWait();
+    }
+    /**private void showTaskDetailsPopup(Task task) {
+        // Create a new stage for the pop-up window
+        Stage popupStage = new Stage();
+        popupStage.initModality(Modality.APPLICATION_MODAL);
+        popupStage.setTitle(task.getTask());
 
         // Create the content for the pop-up window
         VBox popupContent = new VBox();
         popupContent.setPadding(new Insets(10));
-        Label taskLabel = new Label("Task: " + task.getTask());
-        Label detailsLabel = new Label("Details: " + task.getTaskDetails());
-        Label dueDateLabel = new Label("Due Date: " + task.getDueDate().toString());
-        Label expectedTimeLabel = new Label("Expected Time: " + task.getExpectedTime() + " hrs");
-        Button delButton = new Button("Delete Task");
+        Label detailsLabel = new Label("Details:\n" + task.getTaskDetails() + "\n" + "\n");
+        Label dueDateLabel = new Label("\n \n \n \n \n" + "Due Date:  " + task.getDueDate().toString());
+        Button delButton = new Button( "Delete Task");
         delButton.setOnAction(event -> {
             tasks.remove(task);
                     updateCalendar();
         });
-        popupContent.getChildren().addAll(taskLabel, detailsLabel, dueDateLabel, expectedTimeLabel,delButton);
+        popupContent.getChildren().addAll(detailsLabel, dueDateLabel,delButton);
 
         // Create the scene and set it to the stage
         Scene popupScene = new Scene(popupContent, 300, 200);
@@ -263,7 +289,7 @@ public class CalendarController {
 
         // Show the pop-up window
         popupStage.showAndWait();
-    }
+    }*/
 
 
     private void loadTasks() {
@@ -281,7 +307,6 @@ public class CalendarController {
     }
 
     public void deleteBtn(ActionEvent event) {
-
 
          }
 

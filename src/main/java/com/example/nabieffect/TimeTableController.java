@@ -154,6 +154,8 @@ public class TimeTableController {
                     fridayTable.getItems().add(t);
                 } else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Saturday"))) {
                     saturdayTable.getItems().add(t);
+
+
                 }
             }
         }
