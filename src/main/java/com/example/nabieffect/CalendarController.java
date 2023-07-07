@@ -182,7 +182,7 @@ public class CalendarController {
         for (HBox hBox: myHBoxes ) {
             for (int i = 0; i < 7; i++) {
                 TableView<Task> tableView =  (TableView<Task>) hBox.getChildren().get(i);
-                tableView.getColumns().removeAll();
+                tableView.getItems().clear();
             }
 
         }
@@ -280,6 +280,7 @@ public class CalendarController {
         // Show the pop-up window
         popupStage.showAndWait();
     }
+
 
     private void loadTasks() {
         // load tasks from saved file
