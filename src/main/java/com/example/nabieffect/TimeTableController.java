@@ -4,17 +4,16 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.HBox;
-import javafx.scene.control.cell.PropertyValueFactory;
 import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Locale;
-
-
 import static com.example.nabieffect.StartApplication.tasks;
+
 
 public class TimeTableController {
 
@@ -26,10 +25,7 @@ public class TimeTableController {
     TableView<Task> fridayTable = new TableView<Task>();
     TableView<Task> saturdayTable = new TableView<Task>();
     TableView<Task> sundayTable = new TableView<Task>();
-
-    //together
-    TableView[] weekTables = {mondayTable, tuesdayTable, wednesdayTable, thursdayTable};
-    // I thought that to add the double click feature pop up it will be easy to put all the table in one array
+    Label noContentLabel = new Label(" ");
 
     @FXML
     protected void monthBtn() throws IOException {
@@ -109,6 +105,23 @@ public class TimeTableController {
         fridayColumn.setText(formatWithOrdinal(localStartOfWeekDate.plusDays(5), formatter));
         saturdayColumn.setText(formatWithOrdinal(localStartOfWeekDate.plusDays(6), formatter));
 
+        setCellFactoryAndEventHandler(sundayColumn);
+        setCellFactoryAndEventHandler(mondayColumn);
+        setCellFactoryAndEventHandler(tuesdayColumn);
+        setCellFactoryAndEventHandler(wednesdayColumn);
+        setCellFactoryAndEventHandler(thursdayColumn);
+        setCellFactoryAndEventHandler(fridayColumn);
+        setCellFactoryAndEventHandler(saturdayColumn);
+
+        sundayTable.setPlaceholder(noContentLabel);
+        mondayTable.setPlaceholder(noContentLabel);
+        tuesdayTable.setPlaceholder(noContentLabel);
+        wednesdayTable.setPlaceholder(noContentLabel);
+        thursdayTable.setPlaceholder(noContentLabel);
+        fridayTable.setPlaceholder(noContentLabel);
+        saturdayTable.setPlaceholder(noContentLabel);
+
+
         /**
          * 2. from the first date, calculate the last day of the week by adding 6
          **/
@@ -135,23 +148,31 @@ public class TimeTableController {
                  **/
                 if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Sunday"))) {
                     sundayTable.getItems().add(t);
+                    updatePlaceholderVisibility();
                 }else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Monday"))) {
                     mondayTable.getItems().add(t);
+                    updatePlaceholderVisibility();
                 } else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Tuesday"))) {
                     tuesdayTable.getItems().add(t);
+                    updatePlaceholderVisibility();
                 } else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Wednesday"))) {
                     wednesdayTable.getItems().add(t);
+                    updatePlaceholderVisibility();
                 } else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Thursday"))) {
                     thursdayTable.getItems().add(t);
+                    updatePlaceholderVisibility();
                 } else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Friday"))) {
                     fridayTable.getItems().add(t);
+                    updatePlaceholderVisibility();
                 } else if ((t.dueDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals("Saturday"))) {
                     saturdayTable.getItems().add(t);
+                    updatePlaceholderVisibility();
                 }
             }
         }
 
     }
+
     public static String formatWithOrdinal(LocalDate date, DateTimeFormatter formatter) {
         int dayOfMonth = date.getDayOfMonth();
         String ordinalSuffix;
@@ -179,5 +200,55 @@ public class TimeTableController {
         String formattedDate = date.format(formatter);
         return formattedDate + ordinalSuffix;
     }
-}
 
+    private void setCellFactoryAndEventHandler(TableColumn<Task, String> column) {
+        column.setCellFactory(columnData -> {
+
+            CalendarController calendarController = new CalendarController();
+            TableCell<Task, String> cell = new TableCell<Task, String>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    if (empty || item == null) {
+                        setText(null);
+                        setStyle("");  // Reset cell style
+                    } else {
+                        Task task = getTableView().getItems().get(getIndex());
+                        setText(item);
+                        LocalDate currentDate = LocalDate.now();
+                        int daysUntilDue = (int) ChronoUnit.DAYS.between(currentDate, task.getDueDate());
+
+                        if (daysUntilDue == 1) {
+                            setStyle("-fx-background-color: red;");
+                        } else if (daysUntilDue == 2) {
+                            setStyle("-fx-background-color: orange;");
+                        } else {
+                            setStyle("-fx-background-color: transparent;");
+                        }
+                    }
+                }
+            };
+
+            cell.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && !cell.isEmpty()) {
+                    Task selectedTask = cell.getTableView().getItems().get(cell.getIndex());
+                    calendarController.showTaskDetailsPopup(selectedTask);
+                }
+        });
+        return cell;
+    });
+    }
+    public void updatePlaceholderVisibility() {
+        boolean isEmpty = sundayTable.getItems().isEmpty() &&
+                mondayTable.getItems().isEmpty() &&
+                tuesdayTable.getItems().isEmpty() &&
+                wednesdayTable.getItems().isEmpty() &&
+                thursdayTable.getItems().isEmpty() &&
+                fridayTable.getItems().isEmpty() &&
+                saturdayTable.getItems().isEmpty();
+
+        noContentLabel.setVisible(isEmpty);
+    }
+
+}

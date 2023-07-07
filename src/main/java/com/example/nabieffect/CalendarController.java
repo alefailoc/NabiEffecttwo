@@ -20,6 +20,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import static com.example.nabieffect.StartApplication.tasks;
@@ -38,7 +39,7 @@ public class CalendarController {
 
     @FXML
     protected void monthBtn() throws IOException {
-        StartApplication.setRoot("hello-view");
+        StartApplication.setRoot("timetable-view");
     }
 
     public void initialize() {
@@ -65,7 +66,6 @@ public class CalendarController {
                 column.setPrefWidth(110);
 
                 currentDayTable.getColumns().add(column);
-                //weekOneHBox.getChildren().add(currentDayTable);
                 hBox.getChildren().add(currentDayTable);
             }
 
@@ -118,7 +118,7 @@ public class CalendarController {
         //start making the stuff in the dialog
         dialog.setTitle("insert");
         DialogPane dialogPane = dialog.getDialogPane();
-        dialogPane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        dialogPane.getButtonTypes().addAll(ButtonType.OK);
 
         Label taskLabel = new Label("task");
         TextField task = new TextField("");
@@ -131,9 +131,9 @@ public class CalendarController {
 
         // Add a Spinner control
         Label expectedTimeTaken = new Label("Expected time(hrs)");
-        Spinner<Double> timeExpected = new Spinner<>(0.50, 10, 0);
+        Spinner<Double> timeExpected = new Spinner<>(0.30, 10, 0);
 
-        Label maxHoursPerTask = new Label("max hours per task on calendar");
+        Label maxHoursPerTask = new Label("max hours working on the task per day");
         TextField maxHours = new TextField("");
 
         dialogPane.setContent(new VBox(taskLabel, task, detailsLabel, detail, dueDateLabel, dueDate, expectedTimeTaken, timeExpected, maxHoursPerTask,maxHours));
@@ -176,6 +176,8 @@ public class CalendarController {
 
 
     private void updateCalendar() {
+
+        LocalDate today = LocalDate.now();
         //delete all tasks first
         for (HBox hBox: myHBoxes ) {
             for (int i = 0; i < 7; i++) {
@@ -211,7 +213,15 @@ public class CalendarController {
                             } else {
                                 Task task = getTableView().getItems().get(getIndex());
                                 setText(item);
-                                setStyle("-fx-background-color: " + toHexCode(task.getColor()));
+                                int daysUntilDue = (int) ChronoUnit.DAYS.between(today, task.getDueDate());
+
+                                if (daysUntilDue == 1) {
+                                    setStyle("-fx-background-color: red;");
+                                } else if (daysUntilDue >= 2 && daysUntilDue <= 5) {
+                                    setStyle("-fx-background-color: orange;");
+                                } else {
+                                    setStyle("-fx-background-color: transparent;");
+                                }
 
                             }
                         }
@@ -231,7 +241,8 @@ public class CalendarController {
         }
     }
 
-    private void showTaskDetailsPopup(Task task) {
+
+    public void showTaskDetailsPopup(Task task) {
         // Create a new stage for the pop-up window
         Stage popupStage = new Stage();
         popupStage.initModality(Modality.APPLICATION_MODAL);
@@ -240,52 +251,35 @@ public class CalendarController {
         VBox popupContent = new VBox();
         popupContent.setPadding(new Insets(10));
         Label detailsLabel = new Label("Details:\n" + task.getTaskDetails());
-        Label dueDateLabel = new Label("\n \n \n " + "Due Date:  " + task.getDueDate().toString());
+        Label dueDateLabel = new Label("\n" + "Due Date:  ");
+        DatePicker dueDate = new DatePicker();
+        Label spaceBtwn = new Label("\n");
+        dueDate.setValue(task.getDueDate());
         TextField detailsTextField = new TextField();
         detailsTextField.setText(task.getTaskDetails());
-        Button delButton = new Button( "Delete Task");
-        delButton.setOnAction(event -> {
-            tasks.remove(task);
-            updateCalendar();
-        });
         Button saveBtn= new Button("Save");
         saveBtn.setOnAction(event -> {
             task.setTaskDetails(detailsTextField.getText());
-            updateCalendar();
+            task.setDueDate(dueDate.getValue());
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                    try (FileWriter writer = new FileWriter("tasks.json")) {
+                        gson.toJson(tasks, writer);
+                        System.out.println("Saved.");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        updateCalendar();
+                    }
+            popupStage.close();
+
+
         });
-        popupContent.getChildren().addAll(detailsLabel, dueDateLabel,detailsTextField,delButton,saveBtn);
+        popupContent.getChildren().addAll(detailsLabel, dueDateLabel,dueDate, spaceBtwn, detailsTextField, saveBtn);
         // Create the scene and set it to the stage
-        Scene popupScene = new Scene(popupContent, 300, 200);
+        Scene popupScene = new Scene(popupContent, 300, 180);
         popupStage.setScene(popupScene);
         // Show the pop-up window
         popupStage.showAndWait();
     }
-    /**private void showTaskDetailsPopup(Task task) {
-        // Create a new stage for the pop-up window
-        Stage popupStage = new Stage();
-        popupStage.initModality(Modality.APPLICATION_MODAL);
-        popupStage.setTitle(task.getTask());
-
-        // Create the content for the pop-up window
-        VBox popupContent = new VBox();
-        popupContent.setPadding(new Insets(10));
-        Label detailsLabel = new Label("Details:\n" + task.getTaskDetails() + "\n" + "\n");
-        Label dueDateLabel = new Label("\n \n \n \n \n" + "Due Date:  " + task.getDueDate().toString());
-        Button delButton = new Button( "Delete Task");
-        delButton.setOnAction(event -> {
-            tasks.remove(task);
-                    updateCalendar();
-        });
-        popupContent.getChildren().addAll(detailsLabel, dueDateLabel,delButton);
-
-        // Create the scene and set it to the stage
-        Scene popupScene = new Scene(popupContent, 300, 200);
-        popupStage.setScene(popupScene);
-
-        // Show the pop-up window
-        popupStage.showAndWait();
-    }*/
-
 
     private void loadTasks() {
         // load tasks from saved file
@@ -302,7 +296,17 @@ public class CalendarController {
     }
 
     public void deleteBtn(ActionEvent event) {
-         }
+        Task selectedTask = (Task) ((TableView) event.getSource()).getSelectionModel().getSelectedItem();
+        tasks.remove(selectedTask);
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        try (FileWriter writer = new FileWriter("tasks.json")) {
+            gson.toJson(tasks, writer);
+            System.out.println("Saved.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        updateCalendar();
+        }
 
          //https://stackoverflow.com/questions/72583321/how-to-set-pane-colour-from-colour-picker
     public void colourPickerAction(ActionEvent event) {

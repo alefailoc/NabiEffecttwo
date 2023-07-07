@@ -23,7 +23,7 @@ public class StartApplication extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(StartApplication.class.getResource("calendar-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(StartApplication.class.getResource("timetable-view.fxml"));
         scene = new Scene((Parent)fxmlLoader.load());
         stage.setTitle("hello!");
         stage.setScene(scene);
